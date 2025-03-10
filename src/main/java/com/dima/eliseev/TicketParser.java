@@ -13,7 +13,7 @@ public class TicketParser {
 
     public static void main(String[] args) {
         // Путь к файлу JSON
-        String jsonFilePath = "test_data.json";  // Укажи путь к твоему JSON файлу
+        String jsonFilePath = "tickets.json";  // Укажи путь к твоему JSON файлу
 
         try {
             // Читаем содержимое JSON файла

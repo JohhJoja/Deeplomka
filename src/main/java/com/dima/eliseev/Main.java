@@ -1,6 +1,8 @@
 package com.dima.eliseev;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,15 +81,60 @@ public class Main {
                 status = part.split(" ")[part.split(" ").length - 1]; // Получаем последний элемент после "статус"
             }
             if (part.contains("выполнялась")) {
-                assignedTo = part.split(" ")[part.split(" ").length - 1]; // Получаем фамилию из запроса
+                assignedTo = extractSurnameFromQuery(part); // Извлекаем фамилию из фразы "выполнялась"
             }
         }
 
-        // Фильтруем тикеты по статусу и выполняющему
+        System.out.println("Параметры запроса:");
+        System.out.println("Статус: " + status);
+        System.out.println("Исполнитель (фамилия): " + assignedTo);
+
+        // Диагностика: выводим все тикеты, чтобы убедиться, что данные загружены
+        System.out.println("Тикеты в системе:");
         for (Ticket ticket : tickets) {
-            if (ticket.getStatus().equals(status) && ticket.getAssignedTo().contains(assignedTo)) {
-                System.out.println("Найден тикет: " + ticket);
+            System.out.println(ticket);
+        }
+
+        // Фильтруем тикеты по статусу и выполняющему
+        boolean found = false;
+        for (Ticket ticket : tickets) {
+            // Сравниваем статус с учетом регистра
+            boolean statusMatch = ticket.getStatus().equalsIgnoreCase(status);
+            // Сравниваем только фамилию, убираем окончания с помощью метода
+            boolean assignedMatch = stripSurname(ticket.getAssignedTo()).equalsIgnoreCase(stripSurname(assignedTo));
+
+            System.out.println("Проверка тикета: " + ticket.getName());
+            System.out.println("Сравнение статуса: " + ticket.getStatus() + " == " + status + " -> " + statusMatch);
+            System.out.println("Сравнение исполнителя: " + ticket.getAssignedTo() + " == " + assignedTo + " -> " + assignedMatch);
+
+            if (statusMatch && assignedMatch) {
+                found = true;
+                System.out.println("Найден тикет: " + ticket.toString());
             }
         }
+
+        if (!found) {
+            System.out.println("Тикеты, удовлетворяющие запросу, не найдены.");
+        }
+    }
+
+    // Метод для удаления окончаний фамилий
+    private static String stripSurname(String name) {
+        // Простой способ: оставляем только фамилию
+        String[] parts = name.split(" ");
+        return parts[0]; // Берем только фамилию, остальное игнорируем
+    }
+
+    // Метод для извлечения фамилии из запроса
+    private static String extractSurnameFromQuery(String part) {
+        // Делаем предположение, что фамилия будет перед "ым"
+        String[] words = part.split(" ");
+        for (String word : words) {
+            // Если слово заканчивается на "ым", считаем его фамилией
+            if (word.endsWith("ым")) {
+                return word.substring(0, word.length() - 2); // Убираем окончание "ым"
+            }
+        }
+        return ""; // Если не нашли фамилию, возвращаем пустую строку
     }
 }

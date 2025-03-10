@@ -19,6 +19,19 @@ class Ticket {
         this.group = group;
     }
 
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "name='" + name + '\'' +
+                ", status='" + status + '\'' +
+                ", code='" + code + '\'' +
+                ", assignedTo='" + assignedTo + '\'' +
+                ", openTime='" + openTime + '\'' +
+                ", urgency=" + urgency +
+                ", group='" + group + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }

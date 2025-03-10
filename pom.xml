@@ -15,18 +15,6 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>edu.stanford.nlp</groupId>-->
-<!--            <artifactId>stanford-corenlp</artifactId>-->
-<!--            <version>4.5.4</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--            <artifactId>jackson-core</artifactId>-->
-<!--            <version>2.18.3</version>-->
-<!--        </dependency>-->
-
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -34,7 +22,11 @@
                 <version>2.15.0</version>
             </dependency>
 
-
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
 
     </dependencies>
 

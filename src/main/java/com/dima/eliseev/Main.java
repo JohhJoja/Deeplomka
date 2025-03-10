@@ -1,8 +1,6 @@
 package com.dima.eliseev;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,13 +36,17 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        // Пример обработки запроса
+        String query = "предоставить запись, которая имеет статус открыт, выполнялась вчера Елисеевым Дмитрием Алексеевичем";
+        processQuery(query, tickets); // Передаем запрос и список тикетов
     }
 
     // Метод для генерации случайных данных
     private static List<Ticket> generateTickets() {
         List<Ticket> tickets = new ArrayList<>();
         Random rand = new Random();
-        String[] names = {"Иванов Иван Иванович", "Петров Петр Петрович", "Сидоров Сидор Сидорович"};
+        String[] names = {"Иванов Иван Иванович", "Петров Петр Петрович", "Елисеев Дмитрий Алексеевич"};
         String[] statuses = {"открыт", "закрыт", "ожидает"};
         String[] groups = {"Information security", "service desk", "адм. ПТК ЦБ", "ИС", "ЛВС", "ПС"};
 
@@ -62,5 +64,30 @@ public class Main {
 
         return tickets;
     }
-}
 
+    // Метод для обработки запроса
+    private static void processQuery(String query, List<Ticket> tickets) {
+        // Простой парсер запроса для извлечения информации
+        String[] queryParts = query.split(", ");
+
+        String status = "";
+        String assignedTo = "";
+
+        // Извлекаем статус из запроса
+        for (String part : queryParts) {
+            if (part.contains("статус")) {
+                status = part.split(" ")[part.split(" ").length - 1]; // Получаем последний элемент после "статус"
+            }
+            if (part.contains("выполнялась")) {
+                assignedTo = part.split(" ")[part.split(" ").length - 1]; // Получаем фамилию из запроса
+            }
+        }
+
+        // Фильтруем тикеты по статусу и выполняющему
+        for (Ticket ticket : tickets) {
+            if (ticket.getStatus().equals(status) && ticket.getAssignedTo().contains(assignedTo)) {
+                System.out.println("Найден тикет: " + ticket);
+            }
+        }
+    }
+}

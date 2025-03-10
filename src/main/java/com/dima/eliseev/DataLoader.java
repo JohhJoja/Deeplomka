@@ -6,39 +6,70 @@ import java.util.*;
 
 public class DataLoader {
 
-    public static List<Map<String, String>> loadData(String filePath) {
-        List<Map<String, String>> records = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            StringBuilder content = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
-            JSONArray jsonArray = new JSONArray(content.toString());
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject record = jsonArray.getJSONObject(i);
-                Map<String, String> recordData = new HashMap<>();
-                recordData.put("name", record.getString("Имя контактного лица"));
-                recordData.put("status", record.getString("Статус"));
-                recordData.put("code", record.getString("Код"));
-                recordData.put("assignedTo", record.getString("На кого назначено"));
-                recordData.put("openTime", record.getString("Время открытия"));
-                recordData.put("urgency", record.getString("Срочность"));
-                recordData.put("group", record.getString("Группа назначенных"));
-                records.add(recordData);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    // Загрузка тикетов из JSON
+    public static List<Ticket> loadTickets(String fileName) throws IOException {
+        List<Ticket> tickets = new ArrayList<>();
+
+        // Чтение содержимого файла
+        FileReader fileReader = new FileReader(fileName);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            sb.append(line);
         }
-        return records;
+        bufferedReader.close();
+
+        // Преобразование в JSONArray
+        JSONArray ticketsArray = new JSONArray(sb.toString());
+
+        // Преобразование JSON в объекты Ticket
+        for (int i = 0; i < ticketsArray.length(); i++) {
+            JSONObject ticketJson = ticketsArray.getJSONObject(i);
+            Ticket ticket = new Ticket(
+                    ticketJson.getString("name"),
+                    ticketJson.getString("status"),
+                    ticketJson.getString("code"),
+                    ticketJson.getString("assignedTo"),
+                    ticketJson.getString("openTime"),
+                    ticketJson.getInt("urgency"),
+                    ticketJson.getString("group")
+            );
+            tickets.add(ticket);
+        }
+
+        return tickets;
     }
 
-    public static void main(String[] args) {
-        List<Map<String, String>> data = loadData("test_data.json");
-        // Выводим все загруженные данные для проверки
-        for (Map<String, String> record : data) {
-            System.out.println(record);
+    // Загрузка тренировочных данных из JSON
+    public static List<Map<String, String>> loadTrainingData(String fileName) throws IOException {
+        List<Map<String, String>> trainingData = new ArrayList<>();
+
+        // Чтение содержимого файла
+        FileReader fileReader = new FileReader(fileName);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            sb.append(line);
         }
+        bufferedReader.close();
+
+        // Преобразование в JSONArray
+        JSONArray jsonArray = new JSONArray(sb.toString());
+
+        // Преобразование JSON в список словарей с запросами и метками
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            Map<String, String> data = new HashMap<>();
+            data.put("query", jsonObject.getString("query"));
+            data.put("status", jsonObject.getString("status"));
+            data.put("assignedTo", jsonObject.getString("assignedTo"));
+            trainingData.add(data);
+        }
+
+        return trainingData;
     }
 }
+
 
